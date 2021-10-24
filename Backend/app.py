@@ -1,7 +1,6 @@
-from typing import Text
 from flask import Flask,jsonify,request
 from flask_cors import CORS
-from solicitud import solicitud_dte, error_dte
+from solicitud import *
 import xml.etree.ElementTree as ET
 import re
 
@@ -10,7 +9,8 @@ CORS(app, resources={r"/*": {"origin": "*"}})
 
 root=''
 root_s=''
-solicitudes=[]
+solicitudes = []
+autorizaciones = []
 error_s = error_dte()
 
 @app.route('/file', methods=['GET'])
@@ -45,6 +45,48 @@ def post_data():
     save_data(root)
 
     return (jsonify({"MENSAJE":"archivo cargado"}))
+
+@app.route('/file', methods=['DELETE'])
+def delete_data():
+    
+    global root
+    global solicitudes
+    global error_s
+    global autorizaciones
+    d_file=open(root,'w')
+    d_file.close()
+
+    root=''
+    solicitudes=[]
+    autorizaciones=[]
+    error_s = error_dte()   
+
+    return jsonify({'Mensaje':'Se ha reseteado las entradas de autorizaciones'})
+
+@app.route('/peticion', methods=['GET'])
+def get_aprove():
+    global root
+    global root_s
+    global solicitudes
+    global autorizaciones
+    if root!='' and root_s!='':
+        dte_tabla=[]
+        for aut in autorizaciones:
+            for dte in solicitudes:
+                if aut.fecha == dte.tiempo and aut.ref == dte.referencia:
+                    data={"FECHA":dte.tiempo,
+                          "REF":dte.referencia,
+                          "EMISOR": dte.n_emisor,
+                          "RECEPTOR":dte.n_receptor,
+                          "VALOR":dte.valor,
+                          "IVA":dte.iva,
+                          "TOTAL":dte.total,
+                          "CODIGO":aut.codigo}
+                    dte_tabla.append(data)
+
+        return(jsonify(dte_tabla))
+    else:
+        return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
 
 
 def save_data(path):
@@ -111,6 +153,7 @@ def save_data(path):
 def write_xml(data,fechas,emisor,receptor):
     global root_s
     global error_s
+    global autorizaciones   
     root_s='Backend\\data\\autorizaciones.xml'
     DTE=[]
 
@@ -191,6 +234,8 @@ def write_xml(data,fechas,emisor,receptor):
             
                 codigo = ET.SubElement(aprobacion,'CODIGO_APROBACION')
                 codigo.text = str(code_a)
+
+                autorizaciones.append(aprobadas(DTE[i][0].tiempo,str(k.referencia),code_a))
 
                 fac+=1
 

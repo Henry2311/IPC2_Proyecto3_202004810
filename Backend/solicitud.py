@@ -1,4 +1,3 @@
-import re
 class solicitud_dte:
     def __init__(self,tiempo,referencia,n_emisor,n_receptor,valor,iva,total):
         self.tiempo=tiempo
@@ -11,7 +10,11 @@ class solicitud_dte:
         self.autorizacion=False
         self.list_e=[]
 
-    
+class aprobadas:
+    def __init__(self,fecha,ref,codigo):
+        self.fecha = fecha
+        self.ref = ref
+        self.codigo = codigo
     
 class error_dte:
     def __init__(self):

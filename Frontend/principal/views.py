@@ -22,3 +22,12 @@ def index(request):
         url = port.format('/file')
         requests.post(url, json=data)
         return redirect('index')
+
+def peticiones(request):
+    if request.method == 'GET':
+        url = port.format('/peticion')  # http://localhost:3000/file
+        data = requests.get(url).json()  # consulta a la API
+        context = {
+            'data': data,
+        }
+        return render(request, 'peticiones.html',context)
