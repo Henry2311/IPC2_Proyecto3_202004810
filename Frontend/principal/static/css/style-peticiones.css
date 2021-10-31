@@ -18,7 +18,7 @@ body{
     border-radius: 20px;
 }
 
-ul.tabs{
+ul.tabs {
 	width: 100%;
 	background: #363636;
 	list-style: none;
@@ -75,7 +75,7 @@ ul.tabs li a .tab-text{
 }
 
 @media screen and (max-width: 450px){
-	ul.tabs li a{
+	ul.tabs li a {
 		padding: 15px 0px;
 	}
 
@@ -88,3 +88,172 @@ ul.tabs li a .tab-text{
         
 	}
 }
+
+.wrap2{
+	width: 875px;
+	max-width: 90%;
+	margin: 30px auto;
+    border-radius: 20px;
+}
+
+ul.tabs2{
+	width: 100%;
+	background: #363636;
+	list-style: none;
+	display: flex;
+    border-radius: 20px;
+}
+
+ul.tabs2 li {
+	width: 25%;
+}
+
+ul.tabs2 li a {
+	color: #fff;
+	text-decoration: none;
+	font-size: 18px;
+	text-align: center;
+
+	display: block;
+	padding: 20px 0px;
+}
+
+.active{
+	background: #0984CC;
+    border-radius: 20px;
+}
+
+ul.tabs2 li a .tab-text {
+	margin-left: 8px;
+}
+
+.secciones2{
+	width: 100%;
+	margin-top: 0;
+}
+
+.secciones2 article{
+	padding: 30px;
+
+}
+
+.secciones2 article p{
+	text-align: justify;
+}
+
+
+@media screen and (max-width: 700px){
+	ul.tabs2 li{
+		width: none;
+		flex-basis: 0;
+		flex-grow: 1;
+	}
+}
+
+@media screen and (max-width: 700px){
+	ul.tabs2 li a{
+		padding: 15px 0px;
+	}
+
+	ul.tabs2 li a .tab-text {
+		display: none;
+	}
+
+	.secciones2 article{
+		padding: 20px;
+        
+	}
+}
+
+#form-param{
+	display: grid;
+    padding: 1em;
+    row-gap: 1em;
+	grid-template-columns:repeat(2,0.5fr);
+}
+.container-date{
+	display: grid;
+	grid-template-columns: repeat(2,0.5fr);	
+}
+
+.container-date div{
+	display: grid;
+	grid-template-columns: repeat(2,150px);
+	text-align: center;
+}
+.container-date h6{
+	margin-top: 13px;
+
+}
+
+.container-date input{
+	margin-top: 5px;
+	border-radius: 10px;
+	height: 35px;
+	color: gray;
+	border-color: gray;
+}
+.container-button{
+	display: grid;
+	grid-template-columns: repeat(2,150px);
+}
+#filtrar{
+	margin-left: 25px;
+    background-color: #0984CC;
+    border-color: #0984CC;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 15px;
+    width: 150px;
+  }
+
+  #filtrar:hover{
+	background-color: #035794;
+    color: #ffff;
+    transition: 0.5s;
+  }
+  #buscar{
+	margin-left: 150px;
+    background-color: #0984CC;
+    border-color: #0984CC;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 20px;
+    width: 150px;
+  }
+
+  #buscar:hover{
+	background-color: #035794;
+    color: #ffff;
+    transition: 0.5s;
+  }
+  #pdf{
+	margin-left: 290px;
+    background-color: #0984CC;
+    border-color: #0984CC;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 20px;
+    width: 80px;
+  }
+
+  #pdf:hover{
+	background-color: #035794;
+    color: #ffff;
+    transition: 0.5s;
+  }
+  #pdf2{
+	margin-left: 170px;
+    background-color: #0984CC;
+    border-color: #0984CC;
+    font-size: 20px;
+    text-transform: uppercase;
+    border-radius: 20px;
+    width: 80px;
+  }
+  
+  #pdf2:hover{
+	background-color: #035794;
+    color: #ffff;
+    transition: 0.5s;
+  }

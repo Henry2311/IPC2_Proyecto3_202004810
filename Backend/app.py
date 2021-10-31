@@ -1,6 +1,7 @@
 from flask import Flask,jsonify,request
 from flask_cors import CORS
 from solicitud import *
+from datetime import datetime
 import xml.etree.ElementTree as ET
 import re
 
@@ -34,29 +35,54 @@ def get_file():
 
 @app.route('/file', methods=['POST'])
 def post_data():
-    global root
-    root='Backend\data\data.xml'
-    url=request.json['URL']
-    save_file=open(root,'w')
-    data=str(url)
-    save_file.write(data)
-    save_file.close()
+    global root,root_s
+    global solicitudes,autorizaciones,error_s
 
-    save_data(root)
+    if root=='':
+        root='Backend\data\data.xml'
+        url=request.json['URL']
+        save_file=open(root,'w')
+        data=str(url)
+        print(data)
+        data=data.replace('\\t','')
+        print(data)
+        save_file.write(data)
+        save_file.close()
+        save_data(root)
+    else:
+        new = request.json['URL']
+        new = new.replace('<SOLICITUD_AUTORIZACION>','')
+        save_ndata = open(root,'r')
+        temp = save_ndata.read()
+        save_ndata.close()
+        temp = temp.replace('</SOLICITUD_AUTORIZACION>','')
+        print('TEMP ANTES DE AÑADIR NUEVO')
+        print(temp)
+        temp+=new
+        print(temp)
+        new_data=open(root,'w')
+        new_data.write(temp)
+        new_data.close()
+        solicitudes=[]
+        autorizaciones=[]
+        error_s=error_dte
+        root_s=''
+
+        save_data(root)
 
     return (jsonify({"MENSAJE":"archivo cargado"}))
 
 @app.route('/file', methods=['DELETE'])
 def delete_data():
-    
-    global root
-    global solicitudes
-    global error_s
-    global autorizaciones
+    global root,root_s,solicitudes,autorizaciones,error_s
+
     d_file=open(root,'w')
     d_file.close()
-
-    root=''
+    a_file=open(root_s,'w')
+    a_file.close()
+    
+    root = ''
+    root_s = ''
     solicitudes=[]
     autorizaciones=[]
     error_s = error_dte()   
@@ -65,10 +91,8 @@ def delete_data():
 
 @app.route('/peticion', methods=['GET'])
 def get_aprove():
-    global root
-    global root_s
-    global solicitudes
-    global autorizaciones
+    global root,root_s,solicitudes,autorizaciones
+
     if root!='' and root_s!='':
         dte_tabla=[]
         for aut in autorizaciones:
@@ -88,6 +112,80 @@ def get_aprove():
     else:
         return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
 
+
+@app.route('/peticionr', methods=['POST'])
+def get_range_date():
+    global root,root_s,solicitudes,autorizaciones
+    
+    date1 = datetime.strptime(request.json['INICIO'],'%d/%m/%Y')
+    date2 = datetime.strptime(request.json['FIN'],'%d/%m/%Y')
+
+    if root!='' and root_s!='':
+        dte_tabla=[]
+        for aut in autorizaciones:
+            for dte in solicitudes:
+                if aut.fecha == dte.tiempo and aut.ref == dte.referencia:
+                    if date1 <= datetime.strptime(dte.tiempo,'%d/%m/%Y') <= date2:
+                        data={"Fecha":dte.tiempo,
+                              "Ref":dte.referencia,
+                              "Valor":dte.valor,
+                              "Total":dte.total,
+                              "Codigo":aut.codigo}
+                        dte_tabla.append(data)
+
+        if dte_tabla:
+            return(jsonify(dte_tabla))
+        else:
+            return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
+    else:
+        return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
+
+
+@app.route('/peticionm', methods=['POST'])
+def get_movimientos():
+    global root,root_s,solicitudes,autorizaciones
+    
+    date1 = datetime.strptime(request.json['MOV'],'%d/%m/%Y')
+    n_temp=[]
+    for n in autorizaciones:
+        if datetime.strptime(n.fecha,'%d/%m/%Y')==date1:
+            n_temp.append(n.emisor)
+            n_temp.append(n.receptor)
+    
+    n_temp = list(set(n_temp))
+    if root!='' and root_s!='':
+        dte_tabla=[]
+        iva_r=0
+        iva_e=0
+        for n in n_temp:
+            for dte in autorizaciones:
+                if datetime.strptime(dte.fecha,'%d/%m/%Y')==date1:
+                    if n == dte.emisor:
+                        iva_e+=float(dte.iva)
+                    elif n == dte.receptor:
+                        iva_r+=float(dte.iva)
+            
+            fecha_temp=''
+            for dte in autorizaciones:
+                if datetime.strptime(dte.fecha,'%d/%m/%Y')==date1:
+                    fecha_temp=dte.fecha
+                    break
+
+            data={"Fecha":fecha_temp,
+                  "Nit":str(n)+'*',
+                  "Emitido":str(iva_e),
+                  "Recibido":str(iva_r)
+            }        
+            dte_tabla.append(data)
+            iva_r=0
+            iva_e=0
+
+        if dte_tabla:
+            return(jsonify(dte_tabla))
+        else:
+            return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
+    else:
+        return(jsonify({"MENSAJE":"No hay autorizaciones disponibles"}))
 
 def save_data(path):
     global solicitudes
@@ -122,10 +220,12 @@ def save_data(path):
 
     for c in file.findall('./DTE/NIT_EMISOR'):
         d=c.text.replace(' ','')
+        d=d.replace('k','K')
         nit_e.append(d)
 
     for c in file.findall('./DTE/NIT_RECEPTOR'):
         d=c.text.replace(' ','')
+        d=d.replace('k','K')
         nit_r.append(d)
 
     for c in file.findall('./DTE/VALOR'):
@@ -235,7 +335,7 @@ def write_xml(data,fechas,emisor,receptor):
                 codigo = ET.SubElement(aprobacion,'CODIGO_APROBACION')
                 codigo.text = str(code_a)
 
-                autorizaciones.append(aprobadas(DTE[i][0].tiempo,str(k.referencia),code_a))
+                autorizaciones.append(aprobadas(DTE[i][0].tiempo,str(k.referencia),code_a,k.n_emisor,k.n_receptor,k.iva))
 
                 fac+=1
 

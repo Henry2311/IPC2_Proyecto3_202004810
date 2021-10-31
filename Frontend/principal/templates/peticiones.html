@@ -19,7 +19,7 @@
                 <a href="/" class="nav-menu-link nav-link">Inicio</a>
               </li>
             <li class="nav-menu-item">
-              <a href="peticiones" class="nav-menu-link nav-link">Peticiones</a>
+              <a href="#" class="nav-menu-link nav-link">Peticiones</a>
             </li>
             <li>
                 <div class="dropdown show" id="menu-des">
@@ -84,13 +84,114 @@
                 </div>
 			</article>
 			<article id="tab2">
-				<h1>Nosotros</h1>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vel voluptates unde, consequuntur aliquid architecto rem numquam expedita minima dolorem pariatur recusandae, eius quod quia aspernatur id impedit, tenetur! Aspernatur incidunt molestiae dolores animi ea praesentium ipsam tenetur voluptas cupiditate perspiciatis eum nihil, natus exercitationem libero earum fuga dignissimos impedit numquam, quasi, placeat officiis voluptates, ad reprehenderit fugiat? Fugiat aperiam et magni, molestiae, numquam consectetur vitae sapiente cupiditate totam laboriosam voluptate obcaecati, aliquam placeat? Suscipit dolores fuga laudantium sed, qui magni iusto dolore quia. Quis fugit exercitationem porro. Rerum nihil omnis recusandae ratione fuga alias eligendi, earum sunt veritatis praesentium eum perspiciatis. Molestias deserunt, iure neque animi quod! Impedit reprehenderit cumque, numquam velit quae cum eius quidem similique laudantium hic deleniti!</p>
+				<h3>Filtrar por Rango de Fechas</h3>
+        <div id="form-param">
+          <form>
+            {% csrf_token %}
+            <div class="container-date">
+              <div>
+                <h6>Fecha Inicio</h6>
+                <input type="date" id="inicio">
+              </div>
+              <div>
+                <h6>Fecha Final</h6>
+                <input type="date" id="fin">
+              </div>
+            </div>
+          </form>
+          <div class="container-button">
+            <button class="btn btn-primary" id="filtrar" onclick="range_date()"><span class="fa fa-filter"></span> Filtrar</button>
+          </div>
+        </div>
+        
+        <div class="wrap2">
+          <ul class="tabs2">
+            <li><a href="#tab11"><span class="fa fa-money-bill"></span><span class="tab-text">Ver Totales</span></a></li>
+            <li id="litab22"><a href="#tab22"><span class="fa fa-credit-card"></span><span class="tab-text">Ver Sin IVA</span></a></li>
+            <button class="btn btn-primary" id="pdf" onclick="exportarpdf()"><span class="fa fa-file-download"></span> PDF</button>
+          </ul>
+
+          <div class="secciones2" id="rango">
+            <article id="tab11">
+              <div id="main-container" style="margin-top: 0; width: 100%;" >
+                <table id="total-table">
+                    <thead>
+                        <tr>
+                            <th style="border-top-left-radius: 20px;">Fecha</th>
+                            <th>Ref</th>
+                            <th>Total</th>
+                            <th style="border-top-right-radius: 20px;">No. Aprobacion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="totales">
+  
+                    </tbody>
+                </table>
+             </div>
+             <div id="grafico" style="width: 670px; margin-top: 2em;"></div>
+            </article>
+            <article id="tab22">
+              <div id="main-container" style="margin-top: 0; width: 100%;" >
+                <table id="iva-table">
+                    <thead>
+                        <tr>
+                            <th style="border-top-left-radius: 20px;">Fecha</th>
+                            <th>Ref</th>
+                            <th>Valor</th>
+                            <th style="border-top-right-radius: 20px;">No. Aprobacion</th>
+                        </tr>
+                    </thead>
+                    <tbody id="siniva">
+  
+                    </tbody>
+                </table>
+             </div>
+             <div id="grafico2" style="width: 670px; margin-top: 2em;"></div>
+            </article>
+          </div>
+        </div>
+
 			</article>
+
 			<article id="tab3">
-				<h1>Servicios</h1>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ea numquam odio voluptate. Aliquam incidunt similique, et quasi ducimus quos aut autem non dignissimos dicta sit provident, voluptatibus ut blanditiis perspiciatis cum, vel temporibus minima enim. Asperiores omnis placeat officiis a tenetur sit recusandae, reprehenderit neque. Tempora quibusdam, perferendis id ratione culpa dolorum! Nemo, animi?</p><br>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatum dignissimos at esse, ipsum rerum assumenda nisi obcaecati! Aliquam iure voluptatem incidunt, explicabo sit labore, perferendis eius ad vel quia. Praesentium, doloribus. Quisquam provident nostrum totam itaque debitis, minima, tempore dolores!</p>
+				<h3>Movimientos de NIT</h3>
+        <div id="form-param">
+          <form>
+            {% csrf_token %}
+            <div class="container-date">
+              <div>
+                <h6>Fecha a buscar:</h6>
+                <input type="date" id="movf">
+              </div>
+            </div>
+          </form>
+          <div class="container-button">
+            <button class="btn btn-primary" id="buscar" onclick="movimientos()"><span class="fa fa-search"></span> Buscar</button>
+            <button class="btn btn-primary" id="pdf2" onclick="exportarpdf2()"><span class="fa fa-file-download"></span> PDF</button>
+          </div>
+        </div>
+        <div id="contenedorpdf2">
+
+          <div id="main-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th style="border-top-left-radius: 20px;">Fecha</th>
+                        <th>Nit</th>
+                        <th>IVA Emitido</th>
+                        <th style="border-top-right-radius: 20px;">IVA Recibido</th>
+                    </tr>
+                </thead>
+                <tbody id="Movimientos">
+  
+                </tbody>
+            </table>
+         </div>
+
+         <div id="ultima" style="width: 810px; margin-top: 2em;"></div>
+         
+        </div> 
+        </div>
 			</article>
 		</div>
 	</div>
@@ -103,6 +204,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://kit.fontawesome.com/979dc89a18.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     <script src="..\static\js\peticion.js"></script>
+    <script src="..\static\js\peticion-table.js"></script>
+    <script src="..\static\js\range_date.js"></script>
+    <script src="..\static\js\movimientos.js"></script>
+    <script src="..\static\js\pdf1.js"></script>
 </body>
 </html>

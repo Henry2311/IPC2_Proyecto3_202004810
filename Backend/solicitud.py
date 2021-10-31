@@ -11,10 +11,13 @@ class solicitud_dte:
         self.list_e=[]
 
 class aprobadas:
-    def __init__(self,fecha,ref,codigo):
+    def __init__(self,fecha,ref,codigo,emisor,receptor,iva):
         self.fecha = fecha
         self.ref = ref
         self.codigo = codigo
+        self.emisor = emisor
+        self.receptor = receptor
+        self.iva = iva
     
 class error_dte:
     def __init__(self):
@@ -48,28 +51,35 @@ class error_dte:
 
     def mod11(self,nit,type,lista_e):
         val = 0
-        pos=2
+        pos=1
 
         for c in range(len(nit)-2,-1,-1):
             val+=pos*int(nit[c])
             pos+=1
 
             if pos==8:
-                pos=2
+                pos=1
         
         mod=11-(val%11)
 
         i=len(nit)-1
         if mod < 10:
-            if mod == int(nit[i]):
-                print('nit valido')
-            else: 
+            if nit[i]=='K' or nit[i]=='k':
                 if type == 'E':
                     self.e_nitE+=1
                 elif type == 'R':
                     self.e_nitR+=1
                 lista_e.append('Error')
                 print('error nit invalido')
+            elif mod != int(nit[i]): 
+                if type == 'E':
+                    self.e_nitE+=1
+                elif type == 'R':
+                    self.e_nitR+=1
+                lista_e.append('Error')
+                print('error nit invalido')
+            else:
+                print('nit valido')
         elif mod == 10:
             if nit[i] == 'k' or nit[i] == 'K':
                 print('nit valido')
@@ -109,18 +119,6 @@ class error_dte:
             lista_e.append('Error')
             print('error iva invalido')
 
-if __name__ == '__main__':
-    #^([0-2][0-9]|3[0-1])(\/|-)(0[1-9]|1[0-2])\2(\d{4})$
-    
-    ref=['15/01/2021','15/01/2021','10/01/2021']
-    result = []
-    for item in ref:
-        if item not in result:
-            result.append(item)
-
-    print(result)
-
-    
 
     
     
